@@ -1,0 +1,19 @@
+.App {
+  margin: 0
+}
+
+.Setting-Label {
+  text-align: left;
+  padding-top:5px ;
+  padding-left:10px;
+  padding-bottom: 5px;
+  background-color: #1976d2;
+  color: white;
+ }
+ .Setting-Item {
+  text-align: left;
+  padding-top:5px ;
+  padding-left:20px;
+  padding-bottom:10px;
+}
+

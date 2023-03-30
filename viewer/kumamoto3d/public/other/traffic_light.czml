@@ -1,0 +1,1351 @@
+[
+  {
+    "id": "document",
+    "version": "1.0",
+    "name": "信号機"
+  },
+  {
+    "id": "信号001",
+    "name": "信号001",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.65097, 32.733096, 20]
+    }
+  },
+  {
+    "id": "信号002",
+    "name": "信号002",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.639409, 32.731309, 20]
+    }
+  },
+  {
+    "id": "信号003",
+    "name": "信号003",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.638883, 32.733787, 20]
+    }
+  },
+  {
+    "id": "信号004",
+    "name": "信号004",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.629353, 32.718128, 20]
+    }
+  },
+  {
+    "id": "信号005",
+    "name": "信号005",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.641689, 32.753603, 20]
+    }
+  },
+  {
+    "id": "信号006",
+    "name": "信号006",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.648311, 32.777605, 20]
+    }
+  },
+  {
+    "id": "信号007",
+    "name": "信号007",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.652334, 32.77735, 20]
+    }
+  },
+  {
+    "id": "信号008",
+    "name": "信号008",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.656307, 32.777156, 20]
+    }
+  },
+  {
+    "id": "信号009",
+    "name": "信号009",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.658667, 32.776997, 20]
+    }
+  },
+  {
+    "id": "信号010",
+    "name": "信号010",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.665783, 32.776537, 20]
+    }
+  },
+  {
+    "id": "信号011",
+    "name": "信号011",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.673298, 32.781744, 20]
+    }
+  },
+  {
+    "id": "信号012",
+    "name": "信号012",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.673232, 32.783514, 20]
+    }
+  },
+  {
+    "id": "信号013",
+    "name": "信号013",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.658443, 32.752444, 20]
+    }
+  },
+  {
+    "id": "信号014",
+    "name": "信号014",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.6362, 32.768086, 20]
+    }
+  },
+  {
+    "id": "信号015",
+    "name": "信号015",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.60978, 32.766767, 20]
+    }
+  },
+  {
+    "id": "信号016",
+    "name": "信号016",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.658744, 32.765214, 20]
+    }
+  },
+  {
+    "id": "信号017",
+    "name": "信号017",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.659018, 32.76223, 20]
+    }
+  },
+  {
+    "id": "信号018",
+    "name": "信号018",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.66541, 32.764741, 20]
+    }
+  },
+  {
+    "id": "信号019",
+    "name": "信号019",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.638102, 32.778133, 20]
+    }
+  },
+  {
+    "id": "信号020",
+    "name": "信号020",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.644161, 32.777865, 20]
+    }
+  },
+  {
+    "id": "信号021",
+    "name": "信号021",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.673341, 32.790761, 20]
+    }
+  },
+  {
+    "id": "信号022",
+    "name": "信号022",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.673337, 32.792629, 20]
+    }
+  },
+  {
+    "id": "信号023",
+    "name": "信号023",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.672872, 32.776159, 20]
+    }
+  },
+  {
+    "id": "信号024",
+    "name": "信号024",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.680181, 32.775582, 20]
+    }
+  },
+  {
+    "id": "信号025",
+    "name": "信号025",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.681748, 32.775086, 20]
+    }
+  },
+  {
+    "id": "信号026",
+    "name": "信号026",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.672189, 32.767775, 20]
+    }
+  },
+  {
+    "id": "信号027",
+    "name": "信号027",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.677384, 32.767733, 20]
+    }
+  },
+  {
+    "id": "信号028",
+    "name": "信号028",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.668936, 32.7648, 20]
+    }
+  },
+  {
+    "id": "信号029",
+    "name": "信号029",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.671984, 32.764827, 20]
+    }
+  },
+  {
+    "id": "信号030",
+    "name": "信号030",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.677065, 32.764546, 20]
+    }
+  },
+  {
+    "id": "信号031",
+    "name": "信号031",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.674874, 32.750278, 20]
+    }
+  },
+  {
+    "id": "信号032",
+    "name": "信号032",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.674731, 32.745782, 20]
+    }
+  },
+  {
+    "id": "信号033",
+    "name": "信号033",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.676216, 32.744744, 20]
+    }
+  },
+  {
+    "id": "信号034",
+    "name": "信号034",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.67734, 32.784413, 20]
+    }
+  },
+  {
+    "id": "信号035",
+    "name": "信号035",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.676338, 32.784372, 20]
+    }
+  },
+  {
+    "id": "信号036",
+    "name": "信号036",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.681897, 32.744478, 20]
+    }
+  },
+  {
+    "id": "信号037",
+    "name": "信号037",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.683268, 32.736698, 20]
+    }
+  },
+  {
+    "id": "信号038",
+    "name": "信号038",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.658579, 32.78592, 20]
+    }
+  },
+  {
+    "id": "信号039",
+    "name": "信号039",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.644688, 32.78629, 20]
+    }
+  },
+  {
+    "id": "信号040",
+    "name": "信号040",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.661369, 32.787195, 20]
+    }
+  },
+  {
+    "id": "信号041",
+    "name": "信号041",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.643643, 32.715114, 20]
+    }
+  },
+  {
+    "id": "信号042",
+    "name": "信号042",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.682955, 32.763215, 20]
+    }
+  },
+  {
+    "id": "信号043",
+    "name": "信号043",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.595428, 32.81691, 20]
+    }
+  },
+  {
+    "id": "信号044",
+    "name": "信号044",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.588158, 32.82922, 20]
+    }
+  },
+  {
+    "id": "信号045",
+    "name": "信号045",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.588451, 32.829424, 20]
+    }
+  },
+  {
+    "id": "信号046",
+    "name": "信号046",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.586974, 32.831175, 20]
+    }
+  },
+  {
+    "id": "信号047",
+    "name": "信号047",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.58655, 32.832214, 20]
+    }
+  },
+  {
+    "id": "信号048",
+    "name": "信号048",
+    "billboard": {
+      "image": "/icon/traffic_light-1.svg",
+      "horizontalOrigin": "CENTER",
+      "verticalOrigin": "CENTER",
+      "pixelOffset": {
+        "cartesian2": [0, -10]
+      },
+      "pixelOffsetScaleByDistance": {
+        "nearFarScalar": [100, 1, 2000, 0.1]
+      },
+      "scaleByDistance": {
+        "nearFarScalar": [100, 0.15, 2000, 0.05]
+      },
+      "distanceDisplayCondition": {
+        "distanceDisplayCondition": [0, 2000]
+      },
+      "heightReference": "RELATIVE_TO_GROUND"
+    },
+    "viewFrom": {
+      "cartesian": [0, -200, 20]
+    },
+    "position": {
+      "cartographicDegrees": [130.58419, 32.840901, 20]
+    }
+  }
+]

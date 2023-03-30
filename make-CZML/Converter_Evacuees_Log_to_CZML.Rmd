@@ -1,0 +1,875 @@
+# 準備（各種テーブルの読込等）
+
+```{r 準備（各種テーブルの読込等）}
+library(tidyverse)
+library(jsonlite)
+
+options(digits = 15, scipen = 10) # 桁設定オプション（digitsによる有効桁は15桁まで：8byte倍精度）
+
+# 集計対象（徒歩、自動車、合計）
+target_name <- c("walk", "car", "sum")
+
+# 配色設定（RGB）
+color_red <- c(255, 0, 0, 255)
+color_orange <- c(255, 183, 76, 255) # FFB74C
+color_green <- c(0, 255, 0, 255)
+
+# グループ属性名
+group_zokusei <- c(
+  "自宅出発、高齢者あり",
+  "自宅出発、幼児あり",
+  "自宅出発、高齢者＋幼児あり",
+  "自宅出発、一般（高齢者なし、幼児なし）",
+  "特定施設、高齢者あり",
+  "来訪、高齢者あり、車",
+  "来訪、高齢者あり、その他手段",
+  "来訪、一般（高齢者なし、幼児なし）、車",
+  "来訪、一般（高齢者なし、幼児なし）、その他手段"
+)
+
+# シミュレーション結果の読込ケース
+case <- read.csv("dlib/Simulation_Case_Table.csv", fileEncoding = "cp932")
+nrow(case)
+
+# 避難者マスターデータ
+evacuee_table <- read.csv("dlib/Evacuees_Master_Data.csv", fileEncoding = "cp932")
+
+# 避難先テーブル
+evacuation_site_table <- read.csv("dlib/Evacuees_Destination_Table.csv", fileEncoding = "cp932")
+
+# 自動車ネットワークのリンクと避難先の接続対応
+car_link_to_evacuation_site <- read.csv("dlib/Car_Network_Link_to_Destination_Table.csv", fileEncoding = "cp932")
+
+# 自動車ネットワークのリンク別・セクション別の3次元座標テーブル（高さz値は全車線で同値とする）
+car_coord_table <- read.csv("dlib/Car_Network_3D_Coordinates_Table.csv")
+```
+
+# ログデータ読込関数
+
+```{r ログデータ読込関数}
+func_read_logData <- function() {
+  #### 徒歩 ####
+  # 徒歩避難者用データ（グローバル変数で生成：input_walk_sort）
+  input_walk_sort <<-
+    read.csv(paste0("data/", case_name_input, "/walk_log.csv"), fileEncoding = "cp932") %>%
+    select(1:12) %>%
+    setNames(c(
+      "経過時間_sec",
+      "状態フラグ",
+      "グループ番号",
+      "避難先ノード番号",
+      "次ノード番号",
+      "出発点のリンク番号",
+      "出発点からの移動方向",
+      "出発点に使用したリンクの残り移動距離",
+      "出発点までの移動時間",
+      "リンクSQN",
+      "ノードSQN",
+      "累積距離"
+    )) %>%
+    arrange(グループ番号, 経過時間_sec)
+
+  #### 自動車 ####
+  # 自動車避難者用データ(グローバル変数で生成：input_car_sort）
+  input_car_sort <<-
+    read_fwf(paste0("data/", case_name_input, "/car_log.txt"),
+      fwf_widths(
+        widths = c(5, 10, 10, 5, 5, 5),
+        col_names = c("経過時間_sec", "グループ番号", "リンク", "セクション", "車線", "状態フラグ")
+      ),
+      col_types = str_c(rep("i", 6), collapse = ""), # 読込フォーマット：i(integer),d(double),c(character)
+      locale = locale(encoding = "cp932")
+    ) %>%
+    arrange(グループ番号, 経過時間_sec) %>%
+    filter((状態フラグ == 1) == F)
+
+  #### グラフ作成用データ ####
+  # 状態フラグ=1は避難開始レコード
+  # 状態フラグ=2は避難中  レコード
+  # 状態フラグ=4で避難完了レコード
+  # 状態フラグ=8で避難前被災レコード（道路に出られなかった、在宅（垂直）避難とは異なる）
+  # 状態フラグ=9で避難中被災レコード
+
+  # 徒歩
+  g_df_walk <-
+    bind_rows(
+      input_walk_sort,
+      # アクセス分を追加
+      input_walk_sort %>%
+        group_by(グループ番号) %>%
+        mutate(徒歩アクセス用経路SEQ = row_number()) %>%
+        ungroup() %>%
+        filter(徒歩アクセス用経路SEQ == 1) %>%
+        filter(出発点までの移動時間 > 0) %>% # 出発点までの移動時間がゼロがある
+        mutate(経過時間_sec = 経過時間_sec - 出発点までの移動時間)
+    ) %>%
+    mutate(避難手段 = 1) %>%
+    select(経過時間_sec, グループ番号, 状態フラグ, 避難手段, 避難先ノード番号)
+
+  # 自動車
+  g_df_car <-
+    input_car_sort %>%
+    mutate(避難手段 = 2) %>%
+    mutate(避難先ノード番号 = 9999) %>%
+    select(経過時間_sec, グループ番号, 状態フラグ, 避難手段, 避難先ノード番号)
+
+  # 徒歩と自動車を結合
+  g_df_united <-
+    bind_rows(g_df_walk, g_df_car) %>%
+    arrange(グループ番号, 経過時間_sec)
+
+  # スタート時レコードのみ抽出
+  g_df_start <-
+    g_df_united %>%
+    group_by(グループ番号) %>%
+    mutate(出力順 = row_number()) %>%
+    ungroup() %>%
+    filter(出力順 == 1) %>%
+    mutate(イベントフラグ = 1)
+
+  # 最終レコードのみ抽出（最後の状態フラグを利用）
+  g_df_last <-
+    g_df_united %>%
+    group_by(グループ番号) %>%
+    mutate(出力順 = row_number()) %>%
+    ungroup() %>%
+    mutate(出力順 = if_else(出力順 == 1, 2L, 出力順)) %>%
+    filter(状態フラグ %in% c(4, 8, 9)) %>%
+    mutate(イベントフラグ = case_when(
+      状態フラグ == 4 ~ 2,
+      状態フラグ == 8 ~ 3,
+      状態フラグ == 9 ~ 4,
+      T ~ 0
+    ))
+
+  # ＜特殊処理＞
+  # 「アクアドームくまもと」のみ対象地域内の自動車での避難場所として設定（読込テーブルと連動させる必要あり）
+  aqua_dome_car_link <- 920480019
+  aqua_dome_walk_node <- 6221
+
+  car_to_aqua_dome <-
+    input_car_sort %>%
+    filter(状態フラグ == 4) %>%
+    filter(リンク == aqua_dome_car_link) %>%
+    mutate(アクアドーム着 = 1) %>%
+    select(グループ番号, アクアドーム着)
+
+  # グラフ用データ(グローバル変数で生成：g_df）
+  g_df <<-
+    bind_rows(
+      g_df_start %>% semi_join(g_df_last, by = "グループ番号"), # 出発できなかったものを除く（道路脇待機）
+      g_df_last
+    ) %>%
+    left_join(evacuee_table, by = "グループ番号") %>%
+    # 自動車避難に対する処理を追加
+    # バックグラウンド交通車両を除く（グラフの集計対象外）
+    filter(is.na(グループ属性) == F) %>%
+    # 自動車と徒歩の時間差を調整
+    mutate(経過時間_sec = ifelse(避難手段 == 2, 経過時間_sec - walk_diff_time, 経過時間_sec)) %>%
+    # 「アクアドームくまもと」は自動車避難でも集計対象
+    left_join(car_to_aqua_dome, by = "グループ番号") %>%
+    mutate(避難先ノード番号 = if_else(is.na(アクアドーム着) == F, aqua_dome_walk_node, 避難先ノード番号)) %>%
+    select(-アクアドーム着)
+
+  # 集計チェック
+  target_for_check <- c(
+    "対象とする　　　総グループ数＆総人数：",
+    "避難を完了した　　グループ数＆　人数：",
+    "避難前に被災した　グループ数＆　人数：",
+    "避難中に被災した　グループ数＆　人数："
+  )
+
+  for (i in 1:2) {
+    cat(target_name[i], "\n")
+    for (j in 1:4) {
+      targets <- g_df %>% filter(避難手段 == i & イベントフラグ == j)
+      cat(target_for_check[j], sprintf("%5d", nrow(targets)), ",", sprintf("%5d", sum(targets$グループ人数)), "\n")
+    }
+    cat("経過時間_secの最大値：", g_df %>% filter(避難手段 == i) %>% pull(経過時間_sec) %>% max(), "\n")
+  }
+}
+```
+
+# グラフ用JSONデータ・避難場所表示用CZML作成関数
+
+```{r グラフ用JSONデータ・避難場所表示用CZML作成関数}
+func_graph <- function() {
+  #### グラフ１（避難者数の推移（手段別・避難状況別）） ####
+  # 時間設定
+  g1_time_interval <- 300 # 集計単位（秒）
+  g1_maxTime <- ceiling(max(g_df$経過時間_sec) / g1_time_interval) * g1_time_interval
+
+  # 集計対象
+  g_df_filtered <- list(g_df %>% filter(避難手段 == 1), g_df %>% filter(避難手段 == 2), g_df)
+
+  # 被災者がいない場合、ゼロ埋めの列を生成
+  func_add_col_hisai <- function(df) {
+    if (count_event3 == 0L) {
+      df <- df %>% mutate(flag3 = 0)
+    }
+    if (count_event4 == 0L) {
+      df <- df %>% mutate(flag4 = 0)
+    }
+    return(df)
+  }
+
+  for (i in 1:3) {
+    g1_df1 <-
+      g_df_filtered[[i]] %>%
+      # 集計
+      group_by(経過時間_sec, イベントフラグ) %>%
+      tally(グループ人数) %>%
+      ungroup() %>%
+      # ゼロ秒を追加
+      bind_rows(data.frame(経過時間_sec = 0, イベントフラグ = 2, n = 0), .)
+
+    # 総人数
+    evacuee_num <-
+      g_df_filtered[[i]] %>%
+      filter(出力順 == 1) %>%
+      tally(グループ人数) %>%
+      pull()
+    count_event3 <-
+      g_df_filtered[[i]] %>%
+      filter(イベントフラグ == 3) %>%
+      nrow()
+    count_event4 <-
+      g_df_filtered[[i]] %>%
+      filter(イベントフラグ == 4) %>%
+      nrow()
+
+    g1_df2 <-
+      g1_df1 %>%
+      # 横持ちデータに展開
+      pivot_wider(names_from = イベントフラグ, values_from = n, names_prefix = "flag", values_fill = 0) %>%
+      func_add_col_hisai() %>%
+      # フラグ立て
+      mutate(cumsum_避難開始 = cumsum(flag1)) %>%
+      mutate(cumsum_避難完了 = cumsum(flag2)) %>%
+      mutate(cumsum_避難前被災 = cumsum(flag3)) %>%
+      mutate(cumsum_避難中被災 = cumsum(flag4)) %>%
+      mutate(cumsum_避難開始前 = evacuee_num - cumsum_避難開始) %>%
+      mutate(cumsum_避難中 = cumsum_避難開始 - cumsum_避難完了 - cumsum_避難前被災 - cumsum_避難中被災) %>%
+      select(経過時間_sec, cumsum_避難開始前, cumsum_避難開始, cumsum_避難中, cumsum_避難完了, cumsum_避難前被災, cumsum_避難中被災) %>%
+      # 経過時間_secを補間（秒単位）
+      complete(経過時間_sec = 0:g1_maxTime) %>%
+      # NAについては、NAではない前の行から値をコピー
+      fill(cumsum_避難開始前, .direction = "down") %>%
+      fill(cumsum_避難開始, .direction = "down") %>%
+      fill(cumsum_避難中, .direction = "down") %>%
+      fill(cumsum_避難完了, .direction = "down") %>%
+      fill(cumsum_避難前被災, .direction = "down") %>%
+      fill(cumsum_避難中被災, .direction = "down") %>%
+      filter(経過時間_sec %% g1_time_interval == 0) %>% # 出力単位の倍数の経過時間のレコードを抽出
+      mutate(経過時間_出力 = 経過時間_sec / 60) # 分単位で出力
+
+    # JSON変換用リストの記述
+    g1_list <- list(
+      labels = g1_df2$経過時間_出力,
+      # 記述順が重なりの順番（手前・奥）に影響を与える
+      datasets = list(
+        list(
+          label = "避難完了", data = g1_df2$cumsum_避難完了,
+          backgroundColor = "#00FF00", borderColor = "#00FF00"
+        ), # 手前に表示
+        list(
+          label = "避難中", data = g1_df2$cumsum_避難中,
+          backgroundColor = "#FFD800", borderColor = "#FFD800"
+        ),
+        list(
+          label = "避難開始前", data = g1_df2$cumsum_避難開始前,
+          backgroundColor = "#FF0000", borderColor = "#FF0000"
+        ),
+        list(
+          label = "避難中に被災", data = g1_df2$cumsum_避難中被災,
+          backgroundColor = "#000000", borderColor = "#000000"
+        ),
+        list(
+          label = "避難前に被災", data = g1_df2$cumsum_避難前被災,
+          backgroundColor = "#880088", borderColor = "#880088"
+        ) # 奥に表示
+      )
+    )
+
+    # JSON出力
+    g1_list %>%
+      toJSON(auto_unbox = T, pretty = T) %>%
+      write(paste0("out/", case_name, "/graph/g1_", target_name[i], ".json"))
+  }
+
+  #### グラフ２（避難場所別の避難者数の推移） ####
+  g2_time_interval <- 300 # 集計単位（秒）
+  g2_evacuation_sites <- 1:38 # グラフの対象とする避難場所（ベクトル）
+
+  # 避難場所別の避難者数と累積避難者数の推移
+  func_evacuation_site_count <- function(input, time_interval) {
+    # 避難完了レコードを抽出し、経過時間帯を算出
+    df1 <-
+      input %>%
+      filter(状態フラグ == 4) %>%
+      mutate(経過時間帯 = ceiling(経過時間_sec / time_interval)) # 時間帯は【以下、越】で区分
+
+    # 避難場所別の避難者数の推移
+    df2 <-
+      df1 %>%
+      group_by(避難先ノード番号, 経過時間帯) %>%
+      summarise(避難グループ数 = n(), 避難者数 = sum(グループ人数), .groups = "drop") %>%
+      complete(避難先ノード番号, 経過時間帯 = 1:max(経過時間帯)) %>%
+      replace(is.na(.) == T, 0) %>%
+      left_join(evacuation_site_table, by = c("避難先ノード番号" = "ノードID"))
+
+    # 避難場所別の累積避難者数の推移
+    df3 <-
+      df2 %>%
+      select(避難先番号, 避難先名称, 経過時間帯, 避難グループ数, 避難者数) %>%
+      group_by(避難先番号) %>%
+      mutate(累積避難グループ数 = cumsum(避難グループ数), 累積避難者数 = cumsum(避難者数)) %>%
+      ungroup() %>%
+      arrange(避難先番号, 経過時間帯)
+    return(df3)
+  }
+
+  g2_df <-
+    g_df %>%
+    func_evacuation_site_count(g2_time_interval) %>% # 集計単位（秒）
+    mutate(経過時間_出力 = 経過時間帯 * (g2_time_interval / 60)) %>%
+    filter(避難先番号 %in% g2_evacuation_sites) # 対象避難場所を抽出
+
+  # チェック用出力
+  g2_df %>% write.csv(paste0("out/", case_name, "/graph/避難場所別・避難者数の推移.csv"), fileEncoding = "CP932")
+
+  # JSON変換用リストの記述
+  g2_list <- as.list(rep(NA, length(g2_evacuation_sites)))
+  for (i in 1:length(g2_evacuation_sites)) {
+    g2_df_target <- g2_df %>% filter(避難先番号 == g2_evacuation_sites[i])
+    # 最後まで避難者がいない避難場所は0のみ出力（ベクトル生成）
+    g2_list[[i]] <- list(
+      id = g2_evacuation_sites[i],
+      data = list(
+        labels = c(0, g2_df_target$経過時間_出力),
+        datasets = list(
+          list(label = paste(g2_time_interval / 60, "分間の避難者数"), data = c(0, g2_df_target$避難者数), backgroundColor = "#00BFFF"),
+          list(label = "累積避難者数", data = c(0, g2_df_target$累積避難者数), backgroundColor = "#00FF00")
+        )
+      )
+    )
+  }
+
+  # JSON出力
+  g2_list %>%
+    toJSON(auto_unbox = T, pretty = T) %>%
+    write(paste0("out/", case_name, "/graph/g2.json"))
+
+  #### 避難場所描画用CZML ####
+  time_interval <- 10 # 10秒ごとに避難者数ラベルを更新
+  evacuation_site_df1 <-
+    g_df %>%
+    func_evacuation_site_count(time_interval) %>%
+    filter(避難先番号 %in% g2_evacuation_sites) %>% # 対象避難場所を抽出
+    mutate(count = if_else(経過時間帯 < max(経過時間帯),
+      paste0(
+        '{"interval": "',
+        strftime(start_ct + walk_diff_time + (経過時間帯 - 1) * time_interval, format = "%Y-%m-%dT%H:%M:%S+09"), "/",
+        strftime(start_ct + walk_diff_time + (経過時間帯 - 0) * time_interval, format = "%Y-%m-%dT%H:%M:%S+09"), '", ',
+        '"string": "',
+        paste0(避難先名称, "\n現在：", 累積避難者数, "人"), '"}'
+      ),
+      paste0(
+        '{"interval": "',
+        strftime(start_ct + walk_diff_time + (max(経過時間帯) - 1) * time_interval, format = "%Y-%m-%dT%H:%M:%S+09"), "/",
+        stop_datetime, '", ',
+        '"string": "',
+        paste0(避難先名称, "\n現在：", 累積避難者数, "人"), '"}'
+      )
+    ))
+
+  evacuation_site_df2 <-
+    evacuation_site_df1 %>%
+    select(避難先番号, 経過時間帯, count) %>%
+    pivot_wider(names_from = 経過時間帯, values_from = count) %>%
+    unite("text", `1`:ncol(.), sep = ", ", na.rm = T) %>%
+    # 避難先テーブルをベースとする（ライトジョイン、避難者がいない避難場所も対象）
+    right_join(evacuation_site_table, by = "避難先番号") %>%
+    filter(避難先番号 %in% g2_evacuation_sites) %>% # 対象避難場所を抽出
+    arrange(避難先番号) %>%
+    mutate(id = paste0("避難場所", sprintf("%04d", 避難先番号))) %>%
+    filter(避難先番号 > 0) %>% # NAを除く
+    # 避難者がゼロの避難場所のテキストを置き換え
+    # mutate(text = if_else(is.na(text), paste0(避難先名称, "\n現在：", "0人"), text))
+    mutate(text_0person = paste0(
+      '{"interval": "',
+      strftime(start_ct + walk_diff_time, format = "%Y-%m-%dT%H:%M:%S+09"), "/",
+      stop_datetime, '", ',
+      '"string": "',
+      paste0(避難先名称, "\n現在：", "0人"), '"}'
+    )) %>%
+    mutate(text = if_else(is.na(text), text_0person, text))
+
+  # CZML変換用リストの記述
+  jsonlist <- list()
+  jsonlist[[1]] <- list(id = "document", version = "1.0", name = "指定緊急避難場所") # ヘッダー
+
+  # 災害対応
+  symbol_vec <- c("〇", "△", "×")
+
+  for (i in 1:nrow(evacuation_site_df2)) {
+    jsonlist[[i + 1]] <- list(
+      id = evacuation_site_df2$id[i],
+      name = evacuation_site_df2$避難先名称[i],
+      description = paste0(
+        "避難場所：", evacuation_site_df2$避難先名称[i],
+        "<br> 洪水：", symbol_vec[evacuation_site_df2$洪水[i]],
+        "<br> 高潮：", symbol_vec[evacuation_site_df2$高潮[i]],
+        "<br> 津波：", symbol_vec[evacuation_site_df2$津波[i]]
+      ),
+
+      # ビルボード
+      # https://cesium.com/learn/cesiumjs/ref-doc/Billboard.html
+      billboard = list(
+        image = "/icon/picto_JIS_Z8210_6.1.4.svg",
+        horizontalOrigin = "CENTER",
+        verticalOrigin = "CENTER",
+        pixelOffset = list(cartesian2 = c(0, -100)),
+        pixelOffsetScaleByDistance = list(nearFarScalar = c(100, 1, 5000, 0.1)),
+        scaleByDistance = list(nearFarScalar = c(100, 0.1, 5000, 0.01)),
+        distanceDisplayCondition = list(distanceDisplayCondition = c(0, 5000))
+      ),
+
+      # ラベル
+      # https://cesium.com/learn/cesiumjs/ref-doc/Label.html
+      label = list(
+        # インターバル方式
+        text = paste0("replace1[", evacuation_site_df2$text[i], "]replace2"), # 後で文字列変換
+        font = "30px sans-serif",
+        fillColor = list(rgba = c(0, 255, 0, 255)),
+        # アウトラインあり
+        style = "FILL_AND_OUTLINE",
+        outlineColor = list(rgba = c(0, 0, 0, 255)),
+        outlineWidth = 3,
+        # 背景枠あり
+        showBackground = T,
+        backgroundColor = list(rgba = c(100, 100, 100, 255)), # 背景色
+        backgroundPadding = list(cartesian2 = c(3, 3)), # 背景枠の大きさ
+        horizontalOrigin = "CENTER",
+        verticalOrigin = "BOTTOM",
+        pixelOffset = list(cartesian2 = c(0, -150)), # billboardよりも上に配置
+        pixelOffsetScaleByDistance = list(nearFarScalar = c(100, 1, 5000, 0.1)),
+        scaleByDistance = list(nearFarScalar = c(100, 1, 5000, 0.4)),
+        distanceDisplayCondition = list(distanceDisplayCondition = c(0, 5000))
+      ),
+      viewFrom = list(cartesian = c(0, -200, 50)),
+      position = list(cartographicDegrees = c(evacuation_site_df2$x[i], evacuation_site_df2$y[i], evacuation_site_df2$z[i]))
+    )
+  }
+
+  # CZML出力
+  json <-
+    jsonlist %>%
+    toJSON(auto_unbox = T, pretty = T, digits = 6) %>% # digitsで数値の小数点以下桁数の最大値を指定（緯度経度の小数点以下6桁目は10cmレベル）
+    str_replace_all('\"replace1', "") %>%
+    str_replace_all('replace2\"', "") %>%
+    str_replace_all('\\\\"', '"')
+
+  json %>%
+    # minify() %>%
+    write(paste0("out/", case_name, "/evacuation_site_with_count.czml"))
+}
+```
+
+# 避難者CZML変換用リスト作成関数（徒歩・自動車で共通）
+
+```{r 避難者CZML変換用リスト作成関数（徒歩・自動車で共通）}
+func_list_for_czml <- function(df, mode) {
+  mode_name <- c("徒歩避難", "自動車避難")
+
+  # 3Dオブジェクトとポイントの表示を切り替える距離（m）
+  switch_distance_walk <- 400
+  switch_distance_car <- 400
+
+  # CZML変換用リストの記述
+  jsonlist <- list()
+  jsonlist[[1]] <- list(id = "document", version = "1.0", name = mode_name[mode]) # ヘッダー
+
+  for (i in 1:nrow(df)) {
+    jsonlist[[i + 1]] <- list(
+      # id = df$グループ番号_str[i], # 現状ではIDなしで描画可能
+      name = paste0("避難者グループ", df$グループ番号_str[i]),
+      description =
+      # バックグラウンド交通車両の表示
+        if (df$グループ属性[i] == 0) {
+          if (df$状態フラグ[i] == 4) {
+            paste0(
+              "グループ属性：", "バックグラウンド交通車両",
+              "<br> 行先：", df$避難先名称[i],
+              "<br> 到着時刻：", df$到着時刻_format2[i]
+            )
+          } else {
+            paste0(
+              "グループ属性：", "バックグラウンド交通車両",
+              "<br> 被災時刻：", df$到着時刻_format2[i]
+            )
+          }
+          # 通常避難者の表示
+        } else {
+          if (df$状態フラグ[i] == 4) {
+            paste0(
+              "出発地（町丁目）：", df$町丁目名[i],
+              "<br> 出発地（小学校区）：", df$小学校区名[i],
+              "<br> 避難先：", df$避難先名称[i],
+              "<br> グループ属性：", group_zokusei[df$グループ属性[i]],
+              "<br> グループ人数：", df$グループ人数[i],
+              "<br> 避難　開始時刻：", df$出発時刻_format2[i],
+              "<br> 避難先到着時刻：", df$到着時刻_format2[i],
+              "<br> 避難所要時間：", floor(df$避難所要時間_sec[i] / 60), "分 ", df$避難所要時間_sec[i] %% 60, "秒"
+            )
+          } else {
+            paste0(
+              "出発地（町丁目）：", df$町丁目名[i],
+              "<br> 出発地（小学校区）：", df$小学校区名[i],
+              "<br> 避難先：", "浸水に巻き込まれて避難できず",
+              "<br> グループ属性：", group_zokusei[df$グループ属性[i]],
+              "<br> グループ人数：", df$グループ人数[i],
+              "<br> 避難開始時刻：", df$出発時刻_format2[i],
+              "<br> 被災時刻：", df$到着時刻_format2[i]
+            )
+          }
+        },
+
+      # 3Dモデル
+      model =
+        if (mode == 1) {
+          list(
+            gltf = paste0("/icon/person_g", sprintf("%02d", df$グループ人数[i]), ".glb"),
+            distanceDisplayCondition = list(distanceDisplayCondition = c(0, switch_distance_walk))
+          )
+        } else {
+          list(
+            gltf = if (df$グループ属性[i] != 0) {
+              "/icon/car_pink.glb"
+            } else {
+              "/icon/car_orange.glb"
+            },
+            scale = 1.5,
+            distanceDisplayCondition = list(distanceDisplayCondition = c(0, switch_distance_car))
+          )
+        },
+
+      # ポイント
+      point =
+        if (mode == 1) {
+          list(
+            color = list(rgba = color_green),
+            outlineColor = list(rgba = color_green),
+            pixelSize = 4,
+            scaleByDistance = list(nearFarScalar = c(switch_distance_walk, 1.0, 10000, 0.5)),
+            distanceDisplayCondition = list(distanceDisplayCondition = c(switch_distance_walk, 100000))
+          )
+        } else {
+          list(
+            color = list(rgba = if (df$グループ属性[i] != 0) {
+              color_red
+            } else {
+              color_orange
+            }),
+            outlineColor = list(rgba = if (df$グループ属性[i] != 0) {
+              color_red
+            } else {
+              color_orange
+            }),
+            pixelSize = 5,
+            scaleByDistance = list(nearFarScalar = c(switch_distance_car, 1.0, 10000, 0.5)),
+            distanceDisplayCondition = list(distanceDisplayCondition = c(switch_distance_car, 100000))
+          )
+        },
+      viewFrom = list(cartesian = c(0, -200, 50)),
+      orientation = list(velocityReference = "#position"),
+
+      # 時間範囲
+      availability = paste(df$出発時刻_format1[i], df$到着時刻_format1[i], sep = "/"),
+
+      # 経路（時刻＆座標）
+      position = list(
+        epoch = df$出発時刻_format1[i],
+        # 経路データ（時刻, X, Y, Z）
+        cartographicDegrees =
+          if (mode == 1) {
+            # 徒歩の場合、時刻を補正してセット
+            unlist(df$cartographicDegrees[i]) - (seq(1, length(unlist(df$cartographicDegrees[i]))) %% 4 == 1) * df$出発時経過時間_sec[i]
+          } else {
+            as.numeric(unlist(str_split(df$cartographicDegrees[i], ",")))
+          }
+      )
+    )
+  }
+  return(jsonlist)
+}
+```
+
+# 徒歩避難用CZML作成関数
+
+```{r 徒歩避難用CZML作成関数}
+func_walk <- function() {
+  # 経路データ（時刻とX,Y,Z）
+  route <-
+    read_json(paste0("data/", case_name, "/walk_route.json"), simplifyVector = T) %>%
+    select(id, cartographicDegrees) %>%
+    rename(グループ番号 = id)
+
+  #### データ加工 ####
+  df <-
+    input_walk_sort %>%
+    # グループ番号ごとに出力順を付与
+    group_by(グループ番号) %>%
+    # グループ番号ごとの出発時と到着時の経過時間_secを追加
+    group_by(グループ番号) %>%
+    mutate(出発時経過時間_sec = min(経過時間_sec)) %>%
+    mutate(到着時経過時間_sec = max(経過時間_sec)) %>%
+    ungroup() %>%
+    filter(状態フラグ %in% c(4, 9)) %>% # 状態フラグ8（避難開始前に被災）は一切出力しない
+    # 属性情報追加
+    left_join(evacuee_table, by = "グループ番号") %>%
+    left_join(evacuation_site_table %>% filter(避難手段 == 1), by = c("避難先ノード番号" = "ノードID")) %>%
+    left_join(route, by = "グループ番号") %>% # 経路データを付与
+    # 時刻計算
+    # グループ番号ごとの出発時と到着時の時刻（文字列）、避難所要時間_secを追加
+    mutate(出発時刻_format1 = strftime(start_ct + walk_diff_time + 出発時経過時間_sec, format = "%Y-%m-%dT%H:%M:%S+09")) %>%
+    mutate(到着時刻_format1 = strftime(start_ct + walk_diff_time + 到着時経過時間_sec, format = "%Y-%m-%dT%H:%M:%S+09")) %>%
+    mutate(出発時刻_format2 = strftime(start_ct + walk_diff_time + 出発時経過時間_sec, format = "%m/%d %H:%M:%S")) %>%
+    mutate(到着時刻_format2 = strftime(start_ct + walk_diff_time + 到着時経過時間_sec, format = "%m/%d %H:%M:%S")) %>%
+    mutate(避難所要時間_sec = 到着時経過時間_sec - 出発時経過時間_sec) %>%
+    # 出力用
+    mutate(グループ番号_str = sprintf("%07d", グループ番号))
+
+  #### CZML変換用リスト ####
+  jsonlist <- func_list_for_czml(df, 1)
+
+  #### CZML出力 ####
+  json <- jsonlist %>% toJSON(auto_unbox = T, pretty = T, digits = 7)
+
+  # write_json関数では綺麗に出力できなかったため、write関数で出力
+  # ミニファイ（軽量化）バージョンも作成（システム運用時は、読込を速くするためにこちらを使用）
+  json %>%
+    # minify() %>%
+    write(paste0("out/", case_name, "/walk.czml"))
+}
+```
+
+# 自動車避難用CZML作成関数
+
+```{r 自動車避難用CZML作成関数}
+func_car <- function() {
+  #### データ加工（前半：座標補正） ####
+  df0 <-
+    input_car_sort %>%
+    # 移動中のレコードを半減
+    filter((状態フラグ == 2 & 経過時間_sec %% 6 == 2) == F) %>% # 使用メモリ削減のためにデータサイズを小さくする
+    # 3次元座標データを接続
+    left_join(car_coord_table, by = c("リンク" = "LinkCode", "セクション" = "SectNo", "車線" = "laneFromLeft")) %>%
+    mutate(車線 = if_else(is.na(x) == T, 1L, 車線)) %>% # 車線が存在しない場合は1とする
+    select(-x, -y, -z) %>%
+    left_join(car_coord_table, by = c("リンク" = "LinkCode", "セクション" = "SectNo", "車線" = "laneFromLeft")) %>% # もう一度
+    # CesiumJSのCZMLファイルの座標の自動補間機能において、
+    # 停車時（連続する時刻において同じ座標の場合）に進行方向ベクトルが失われて横を向く現象を
+    # 座標値の微小な変更により進行方向ベクトルを与えることで車体の向きを修正する
+    # lag関数とlead関数を利用してデータ変化を取得
+    # ・lag 関数は前行の値を取得
+    # ・lead関数は次行の値を取得
+    mutate(グループ番号_diff = グループ番号 - lag(グループ番号)) %>%
+    mutate(リンク_diff = リンク - lag(リンク)) %>%
+    mutate(セクション_diff = セクション - lag(セクション)) %>%
+    mutate(停車継続フラグ = if_else(グループ番号_diff == 0 & リンク_diff == 0 & セクション_diff == 0, 1, 0)) %>% # グループ番号、リンク、セクションが等しい場合
+    # 停車開始および終了時のレコードを判別するフラグを立てる（1：開始時、-1：終了時（使用しない）、0：その他）
+    mutate(停車開始終了フラグ = if_else(グループ番号_diff == 0, lead(停車継続フラグ) - 停車継続フラグ, 0)) %>%
+    replace_na(list(停車継続フラグ = 0, 停車開始終了フラグ = 0)) %>%
+    # 停車中については、最初と最後の時刻のレコードのみを抽出
+    filter((停車継続フラグ == 1 & 停車開始終了フラグ == 0) == F) %>%
+    # 時刻および座標の変化を算出
+    mutate(t_diff = lead(経過時間_sec) - 経過時間_sec) %>% # 次行との比較
+    mutate(x_diff = x - lag(x)) %>% # 前行との比較
+    mutate(y_diff = y - lag(y)) %>% # 前行との比較
+    mutate(z_diff = z - lag(z)) %>% # 前行との比較
+    # 座標補正（停車時の最初のレコードの座標を走行して来た方向に修正：ゆっくり止まるような表現となる）
+    # 補正比は0.01～0.05（1の場合、前レコードの位置と重なる）
+    # 補正比が1だと前レコードと位置が重なるため、最大でも0.05(移動距離の1/20の地点)とする
+    # ただし最小値は0.01（長時間停車で進行方向ベクトルが作成できない（小数点以下桁数で違いが出ない）ほど僅かな差となるため）
+    mutate(hosei_ratio = if_else(t_diff < 20L, 0.05,
+      if_else(t_diff > 120L, 0.01, 1 / t_diff)
+    )) %>%
+    mutate(座標補正実行フラグ = if_else(is.na(t_diff) == F & 停車開始終了フラグ == 1, 1, 0)) %>%
+    mutate(x_r = if_else(座標補正実行フラグ == 1, x - x_diff * hosei_ratio, x)) %>%
+    mutate(y_r = if_else(座標補正実行フラグ == 1, y - y_diff * hosei_ratio, y)) %>%
+    mutate(z_r = if_else(座標補正実行フラグ == 1, z - z_diff * hosei_ratio, z)) %>%
+    # グループ番号ごとに出力順を付与
+    group_by(グループ番号) %>%
+    mutate(出力順 = row_number()) %>%
+    ungroup() %>%
+    # グループ番号ごとの出発時と到着時の経過時間_secを追加
+    group_by(グループ番号) %>%
+    mutate(出発時経過時間_sec = min(経過時間_sec)) %>%
+    mutate(到着時経過時間_sec = max(経過時間_sec)) %>%
+    ungroup() %>%
+    # 経過時間_secと座標の桁指定文字列化
+    # 緯度経度は小数点以下7桁（1cmレベル：6桁では停車時の車体向きの補正精度が下がるため）
+    # 楕円体高は小数点以下2桁（1cm単位  ：1桁では停車時の車体勾配の補正精度が下がるため）
+    mutate(経過時間_sec_str = sprintf("%6d", 経過時間_sec - 出発時経過時間_sec)) %>% # タイムスタンプをゼロ基準に修正
+    mutate(x_str = sprintf("%11.7f", x_r)) %>%
+    mutate(y_str = sprintf("%10.7f", y_r)) %>%
+    mutate(z_str = sprintf("%7.2f", z_r)) %>%
+    # 経過時間_secとXYZ座標を１セットにまとめる
+    unite("座標セット", 経過時間_sec_str, x_str, y_str, z_str, sep = ", ")
+
+  # 避難先の取得
+  evacuation_site_table_for_car <-
+    df0 %>%
+    filter(状態フラグ == 4) %>%
+    mutate(避難先名称 = left_join(., car_link_to_evacuation_site, by = "リンク")$避難先名称) %>%
+    select(グループ番号, 避難先名称) %>%
+    arrange(グループ番号)
+
+  # 経路データ（時刻とX,Y,Z）
+  route <-
+    df0 %>%
+    # ピボットで経路情報を横持ちデータに展開
+    select(グループ番号, 出力順, 座標セット) %>%
+    pivot_wider(names_from = 出力順, values_from = 座標セット) %>%
+    # 経路（時間と座標の列挙）
+    unite("cartographicDegrees", `1`:ncol(.), sep = ", ", na.rm = T)
+
+  #### データ加工（後半） ####
+  df <-
+    df0 %>%
+    filter(状態フラグ %in% c(4, 9)) %>% # 状態フラグ8（避難開始前に被災）は一切出力しない
+    # 属性情報追加
+    left_join(evacuee_table, by = "グループ番号") %>%
+    left_join(evacuation_site_table_for_car, by = "グループ番号") %>%
+    left_join(route, by = "グループ番号") %>% # 経路データを付与
+    # 時刻計算
+    # グループ番号ごとの出発時と到着時の時刻（文字列）、避難所要時間_secを追加
+    mutate(出発時刻_format1 = strftime(start_ct + 出発時経過時間_sec, format = "%Y-%m-%dT%H:%M:%S+09")) %>%
+    mutate(到着時刻_format1 = strftime(start_ct + 到着時経過時間_sec, format = "%Y-%m-%dT%H:%M:%S+09")) %>%
+    mutate(出発時刻_format2 = strftime(start_ct + 出発時経過時間_sec, format = "%m/%d %H:%M:%S")) %>%
+    mutate(到着時刻_format2 = strftime(start_ct + 到着時経過時間_sec, format = "%m/%d %H:%M:%S")) %>%
+    mutate(避難所要時間_sec = 到着時経過時間_sec - 出発時経過時間_sec) %>%
+    # 出力用
+    mutate(グループ番号_str = sprintf("%07d", グループ番号)) %>%
+    # バックグラウンド交通車両の場合
+    replace_na(list(グループ属性 = 0, グループ人数 = 1, 町丁目コード = 0, 座標X = 0, 座標Y = 0, 校区番号 = 0, 町丁目名 = "", 小学校区名 = ""))
+
+  #### CZML変換用リスト ####
+  jsonlist <- func_list_for_czml(df, 2)
+
+  #### CZML出力 ####
+  json <- jsonlist %>% toJSON(auto_unbox = T, pretty = T, digits = 7)
+
+  # write_json関数では綺麗に出力できなかったため、write関数で出力
+  # ミニファイ（軽量化）バージョンも作成（システム運用時は、読込を速くするためにこちらを使用）
+  json %>%
+    # minify() %>%
+    write(paste0("out/", case_name, "/car.czml"))
+}
+```
+
+# 渋滞箇所表示用CZML作成関数
+
+```{r 渋滞箇所表示用CZML作成関数}
+func_car_jutai <- function() {
+  # 渋滞判定（自由走行速度に対する平均走行速度の比率）
+  jutai_threshold1 <- 0.2 # 渋滞（重度）
+  jutai_threshold2 <- 0.5 # 渋滞
+
+  # 入力データ時間帯の長さ（秒）
+  jutai_time_range <- 600
+
+  #### データ読込 ####
+  input_ave_speed <-
+    read.csv(paste0("data/", case_name_input, "/car_link_average_velocity.csv"), fileEncoding = "CP932") %>%
+    # m/secを時速に変換
+    mutate(自由速度 = 自由速度 * 3.6) %>%
+    mutate(平均速度 = 平均速度 * 3.6)
+
+  # plot(input_ave_speed$自由速度, input_ave_speed$平均速度)
+
+  #### データ加工 ####
+  df <-
+    input_ave_speed %>%
+    filter(率 < jutai_threshold2) %>% # 渋滞判定
+    filter(時間帯 %% jutai_time_range == 0) %>% # 最後の時間帯を除く
+    arrange(時間帯, リンクID) %>%
+    mutate(開始時刻_format1 = strftime(start_ct + 時間帯 - jutai_time_range, format = "%Y-%m-%dT%H:%M:%S+09")) %>%
+    mutate(終了時刻_format1 = strftime(start_ct + 時間帯, format = "%Y-%m-%dT%H:%M:%S+09")) %>%
+    mutate(開始時刻_format2 = strftime(start_ct + 時間帯 - jutai_time_range, format = "%m/%d %H:%M:%S")) %>%
+    mutate(終了時刻_format2 = strftime(start_ct + 時間帯, format = "%m/%d %H:%M:%S")) %>%
+    left_join(car_coord_table, by = c("リンクID" = "LinkCode", "最大セクション" = "SectNo"))
+
+  #### CZML変換用リストの記述 ####
+  jsonlist <- list()
+  jsonlist[[1]] <- list(id = "document", version = "1.0", name = "自動車渋滞箇所") # ヘッダー
+
+  # 渋滞箇所があれば追加
+  if (nrow(df) > 0) {
+    for (i in 1:nrow(df)) {
+      jsonlist[[i + 1]] <- list(
+        id = paste0(sprintf("%09d", df$リンクID[i]), ", ", df$開始時刻_format2[i], " ～"), # IDをユニークにするため、リンクと時間帯のペアで生成
+        name = paste0("リンク", sprintf("%09d", df$リンクID[i])),
+        # 説明
+        description = paste0(
+          "平均走行速度：", sprintf("%6.2f", df$平均速度[i]), "km/h",
+          "<br> 自由走行速度：", sprintf("%6.2f", df$自由速度[i]), "km/h",
+          "<br> 自由走行速度比：", sprintf("%5.3f", df$率[i]),
+          "<br> 時間帯：", paste0(df$開始時刻_format2[i], " - ", df$終了時刻_format2[i])
+        ),
+        # ポイント
+        point = list(
+          color = list(rgba = if (df$率[i] < jutai_threshold1) {
+            color_red
+          } else {
+            color_orange
+          }),
+          outlineColor = list(rgba = if (df$率[i] < jutai_threshold1) {
+            color_red
+          } else {
+            color_orange
+          }),
+          pixelSize = 5
+        ),
+        # 時間範囲
+        availability = paste(df$開始時刻_format1[i], df$終了時刻_format1[i], sep = "/"),
+        # 座標
+        # 全体マップ（2D平面上）への表示を前提としたデータだが、遅い（渋滞が酷い）方のz値（高さ）を大きくして手前に表示
+        # disableDepthTestDistanceでは逆転が生じたままとなってしまい、綺麗に表示できなかった
+        position = list(cartographicDegrees = c(df$x[i], df$y[i], if_else(df$率[i] < jutai_threshold1, 20, 10)))
+      )
+    }
+  }
+
+  #### CZML出力 ####
+  jsonlist %>%
+    toJSON(auto_unbox = T, pretty = T, digits = 6) %>% # digitsで数値の小数点以下桁数の最大値を指定（緯度経度の小数点以下6桁目は10cmレベル）
+    write(paste0("out/", case_name, "/car_jutai.czml"))
+}
+```
+
+# 実行
+
+```{r 実行}
+# シミュレーションのケースごとに実行
+i <- 1
+for (i in 1:nrow(case)) {
+  case_name_input <- case$入力フォルダー[i]
+  case_name <- case$出力フォルダー[i]
+  start_datetime <- case$開始日時[i]
+  stop_datetime <- case$終了日時[i]
+  walk_diff_time <- case$徒歩時差_対自動車_sec[i]
+  cat("\n", case_name_input, "\n")
+
+  start_ct <- as.POSIXct(start_datetime, format = "%Y-%m-%dT%H:%M:%S+09", tz = "Japan") # 時刻型（秒単位の足し引きが可能）
+  dir.create(paste0("out/", case_name, "/graph"), recursive = T, showWarnings = F) # 出力用ディレクトリを作成
+
+  # 各関数を実行
+  func_read_logData()
+  func_graph()
+  func_walk()
+  func_car()
+  func_car_jutai()
+}
+```
